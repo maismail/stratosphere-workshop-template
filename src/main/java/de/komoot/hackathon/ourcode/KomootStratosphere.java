@@ -21,22 +21,32 @@ public class KomootStratosphere implements PlanAssembler, PlanAssemblerDescripti
 	@Override
 	public Plan getPlan(String... args) {
 		int noSubTasks = (args.length > 0 ? Integer.parseInt(args[0]) : 1);
-		String dataInput = (args.length > 1 ? args[1] : "");
-		String output = (args.length > 2 ? args[2] : "");
+		String dataInput1 = (args.length > 1 ? args[1] : "");
+		String dataInput2 = (args.length > 2 ? args[2] : "");
+		
+		String output = (args.length > 3 ? args[3] : "");
 
-		FileDataSource source = new FileDataSource(TextInputFormat.class,
-				dataInput, "Input Lines");
-		source.setParameter(TextInputFormat.CHARSET_NAME, "ASCII"); // comment
-																	// out this
-																	// line for
-																	// UTF-8
-																	// inputs
+		FileDataSource source1 = new FileDataSource(TextInputFormat.class,
+				dataInput1, "nodes data");
 		
-		MapContract mapper = MapContract.builder(BBTask.class).input(source).name("BBTask").build();
+		FileDataSource source2 = new FileDataSource(TextInputFormat.class,
+				dataInput2, "areas data");
 		
-			
+		source1.setParameter(TextInputFormat.CHARSET_NAME, "ASCII");
+		source2.setParameter(TextInputFormat.CHARSET_NAME, "ASCII");
+		
+		
+		MapContract bbmapper1 = MapContract.builder(BBTask.class).input(source1).name("BBTask for nodes").build();
+		MapContract bbmapper2 = MapContract.builder(BBTask.class).input(source2).name("BBTask for areas").build();
+		
+	
+		MapContract gtmapper1 = MapContract.builder(GTTask.class).input(bbmapper1).name("GTTask for nodes").build();
+		MapContract gtmapper2 = MapContract.builder(GTTask.class).input(bbmapper2).name("GTTask for areas").build();
+		
+		
+
 		FileDataSink out = new FileDataSink(RecordOutputFormat.class, output,
-		mapper, "Result");
+		gtmapper1, "Result");
 		
 		RecordOutputFormat.configureRecordFormat(out).recordDelimiter('\n')
 		.fieldDelimiter(',').lenient(true).field(PactString.class, 0)
