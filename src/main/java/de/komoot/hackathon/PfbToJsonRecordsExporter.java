@@ -15,7 +15,7 @@ public class PfbToJsonRecordsExporter {
 	/** automatically generated Logger statement. */
 	private final static org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(PfbToJsonRecordsExporter.class);
 
-	private final static int NUMBEROFNODES = 2001460000; //prevents ArrayList resize: from http://www.openstreetmap.org/stats/data_stats.html
+	private final static int NUMBEROFNODES = 1000; //prevents ArrayList resize: from http://www.openstreetmap.org/stats/data_stats.html
 
 	public static void main(String[] args) throws IOException {
 		PbfReader in = new PbfReader(new File(args[0]), 4);
