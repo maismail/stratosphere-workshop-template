@@ -37,6 +37,7 @@ public class KomootStratosphere implements PlanAssembler, PlanAssemblerDescripti
 			
 		FileDataSink out = new FileDataSink(RecordOutputFormat.class, output,
 		mapper, "Result");
+		
 		RecordOutputFormat.configureRecordFormat(out).recordDelimiter('\n')
 		.fieldDelimiter(',').lenient(true).field(PactString.class, 0)
 		.field(PactCoordinatesList.class, 1).field(PactCoordinatesList.class, 2);

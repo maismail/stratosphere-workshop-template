@@ -7,18 +7,24 @@ import com.vividsolutions.jts.geom.Geometry;
 
 import de.komoot.hackathon.openstreetmap.GeometryModule;
 import de.komoot.hackathon.openstreetmap.JsonGeometryEntity;
+import eu.stratosphere.pact.common.contract.ReduceContract.Combinable;
 import eu.stratosphere.pact.common.stubs.Collector;
 import eu.stratosphere.pact.common.stubs.MapStub;
+import eu.stratosphere.pact.common.stubs.ReduceStub;
+import eu.stratosphere.pact.common.stubs.StubAnnotation.ConstantFields;
+import eu.stratosphere.pact.common.stubs.StubAnnotation.OutCardBounds;
 import eu.stratosphere.pact.common.type.PactRecord;
 import eu.stratosphere.pact.common.type.base.PactDouble;
+import eu.stratosphere.pact.common.type.base.PactInteger;
 import eu.stratosphere.pact.common.type.base.PactList;
 import eu.stratosphere.pact.common.type.base.PactPair;
 import eu.stratosphere.pact.common.type.base.PactString;
 
+@ConstantFields(fields = {})
+@OutCardBounds(lowerBound = 0, upperBound = OutCardBounds.UNBOUNDED)
 public class BBTask extends MapStub {
 
-	
-	private static class DoubleDoublePactPair extends PactPair<PactDouble, PactDouble> {
+	public static class DoubleDoublePactPair extends PactPair<PactDouble, PactDouble> {
 		public DoubleDoublePactPair() {}
 		
 		public DoubleDoublePactPair(double first, double second) {
@@ -57,7 +63,8 @@ public class BBTask extends MapStub {
 		mapper.registerModule(new GeometryModule());
 		mapper.configure(JsonGenerator.Feature.AUTO_CLOSE_TARGET, false);
 	}
-	
+			
+		
 	@Override
 	public void map(PactRecord record, Collector<PactRecord> collector)
 			throws Exception {
