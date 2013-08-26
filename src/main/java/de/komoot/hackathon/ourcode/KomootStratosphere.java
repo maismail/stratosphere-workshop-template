@@ -1,14 +1,17 @@
 package de.komoot.hackathon.ourcode;
 
-import de.komoot.hackathon.ourcode.BBTask.PactCoordinatesList;
+import de.komoot.hackathon.ourcode.FReduce.PactStringList;
 import eu.stratosphere.pact.common.contract.FileDataSink;
 import eu.stratosphere.pact.common.contract.FileDataSource;
 import eu.stratosphere.pact.common.contract.MapContract;
+import eu.stratosphere.pact.common.contract.MatchContract;
+import eu.stratosphere.pact.common.contract.ReduceContract;
 import eu.stratosphere.pact.common.io.RecordOutputFormat;
 import eu.stratosphere.pact.common.io.TextInputFormat;
 import eu.stratosphere.pact.common.plan.Plan;
 import eu.stratosphere.pact.common.plan.PlanAssembler;
 import eu.stratosphere.pact.common.plan.PlanAssemblerDescription;
+import eu.stratosphere.pact.common.type.base.PactInteger;
 import eu.stratosphere.pact.common.type.base.PactString;
 
 public class KomootStratosphere implements PlanAssembler, PlanAssemblerDescription{
@@ -43,14 +46,16 @@ public class KomootStratosphere implements PlanAssembler, PlanAssemblerDescripti
 		MapContract gtmapper1 = MapContract.builder(GTTask.class).input(bbmapper1).name("GTTask for nodes").build();
 		MapContract gtmapper2 = MapContract.builder(GTTask.class).input(bbmapper2).name("GTTask for areas").build();
 		
+		MatchContract matcher = MatchContract.builder(MatchTask.class, PactInteger.class, 0, 0).input1(gtmapper1).input2(gtmapper2).name("Matcher").build();
 		
-
+		ReduceContract reducer = ReduceContract.builder(FReduce.class).input(matcher).keyField(PactString.class, 0).name("Reducer").build();
+		
 		FileDataSink out = new FileDataSink(RecordOutputFormat.class, output,
-		gtmapper1, "Result");
+				reducer, "Result");
 		
 		RecordOutputFormat.configureRecordFormat(out).recordDelimiter('\n')
 		.fieldDelimiter(',').lenient(true).field(PactString.class, 0)
-		.field(PactCoordinatesList.class, 1).field(PactCoordinatesList.class, 2);
+		.field(PactStringList.class, 1);
 
 		Plan plan = new Plan(out, "BB");
 		plan.setDefaultParallelism(noSubTasks);
