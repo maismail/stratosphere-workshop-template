@@ -1,8 +1,6 @@
 package de.komoot.hackathon.ourcode;
 
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 
 import eu.stratosphere.pact.common.stubs.Collector;
 import eu.stratosphere.pact.common.stubs.ReduceStub;
@@ -22,6 +20,12 @@ public class FReduce extends ReduceStub {
 				add(str);
 			}
 		}
+
+		@Override
+		public String toString() {
+			return super.toString().replace("[", "").replace("]", "").replace(" ", "");
+		}
+		
 	}
 	
 	private final PactRecord outputRecord = new PactRecord();
