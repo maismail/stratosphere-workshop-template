@@ -23,9 +23,9 @@ public class GTTask extends MapStub{
 	}
 	
 	private final PactRecord outputRecord = new PactRecord();
-	private final double GRID_X = 8;
-	private final double GRID_Y = 53;
-	private final int CELL_PER_DEGREE = 90;
+	private final double GRID_X = 0;
+	private final double GRID_Y = 0;
+	private final int CELL_PER_DEGREE = 100;
 	
 	@Override
 	public void map(PactRecord record, Collector<PactRecord> collector)

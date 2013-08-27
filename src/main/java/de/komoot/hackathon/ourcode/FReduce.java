@@ -1,6 +1,8 @@
 package de.komoot.hackathon.ourcode;
 
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 import eu.stratosphere.pact.common.stubs.Collector;
 import eu.stratosphere.pact.common.stubs.ReduceStub;
@@ -29,19 +31,26 @@ public class FReduce extends ReduceStub {
 	}
 	
 	private final PactRecord outputRecord = new PactRecord();
+	
 	@Override
 	public void reduce(Iterator<PactRecord> records,
 			Collector<PactRecord> out) throws Exception {
 		PactString key = null;
-		PactStringList datalist = new PactStringList();
+		Set<String> datasets = new HashSet<String>();
 		while (records.hasNext()) {
 			PactRecord element = records.next();
-			if(key == null)
+			if(key == null){
 				key = element.getField(0, PactString.class);
-			datalist.add(element.getField(1, PactString.class));
+			}
+			datasets.add(element.getField(1, PactString.class).getValue());
+		}
+		PactStringList datalist = new PactStringList();
+		for(String str : datasets){
+			datalist.add(new PactString(str));
 		}
 		outputRecord.setField(0, key);
-		outputRecord.setField(1, datalist);
+		outputRecord.setField(1, new PactString(""));
+		outputRecord.setField(2, datalist);
 		out.collect(outputRecord);
 	}
 
