@@ -23,7 +23,7 @@ public class FReduce extends ReduceStub {
 
 		@Override
 		public String toString() {
-			return super.toString().replace("[", " ").replace("]", "");
+			return super.toString().replace("[", "").replace("]", "").replace(" ", "");
 		}
 		
 	}
