@@ -13,12 +13,12 @@ import eu.stratosphere.pact.common.type.PactRecord;
 import eu.stratosphere.pact.common.type.base.PactDouble;
 import eu.stratosphere.pact.common.type.base.PactInteger;
 
-public class SplitByMedian extends CoGroupStub {
+public class SplitNodesByMedian extends CoGroupStub {
 	
 	private String orientation = "HORIZONTAL";
 	private boolean isFirst = true;
 	private int id = -1;
-	private final static Log LOG = LogFactory.getLog(SplitByMedian.class);
+	private final static Log LOG = LogFactory.getLog(SplitNodesByMedian.class);
 	@Override
 	public void open(Configuration parameters) throws Exception {
 		super.open(parameters);
@@ -28,12 +28,12 @@ public class SplitByMedian extends CoGroupStub {
 	@Override
 	public void coGroup(Iterator<PactRecord> records1,
 			Iterator<PactRecord> records2, Collector<PactRecord> out) {
-//		if (!records1.hasNext() || !records2.hasNext()) {
-//			return;
-//		}
-		LOG.info("records1.hasNext() " + records1.hasNext());
-		LOG.info("records2.hasNext() " + records2.hasNext());
-		LOG.info("records2 id " + records2.next().getField(0, PactInteger.class).getValue());
+		if (!records2.hasNext()) {
+			return;
+		}
+//		LOG.info("records1.hasNext() " + records1.hasNext());
+//		LOG.info("records2.hasNext() " + records2.hasNext());
+//		LOG.info("records2 id " + records2.next().getField(0, PactInteger.class).getValue());
 		double border = records1.next().getField(1, PactDouble.class).getValue();
 		int index = orientation.equals("HORIZONTAL") ? 1 : 2;
 		while (records2.hasNext()) {

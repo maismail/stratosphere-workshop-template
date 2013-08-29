@@ -50,9 +50,9 @@ public class TreeBuildingPlan implements PlanAssembler,
 		
 		CoGroupContract medianSearch = CoGroupContract.builder(MedianSearch.class, PactInteger.class, 0, 0).input1(nodeMapper).input2(areaMapper).name("median 0").build();
 		medianSearch.setParameter("orientation",  "HORIZONTAL");
-		CoGroupContract nodeSplit = CoGroupContract.builder(SplitByMedian.class, PactInteger.class, 0, 0).input1(medianSearch).input2(nodeMapper).name("node split 0").build();
+		CoGroupContract nodeSplit = CoGroupContract.builder(SplitNodesByMedian.class, PactInteger.class, 0, 0).input1(medianSearch).input2(nodeMapper).name("node split 0").build();
 		nodeSplit.setParameter("orientation",  "HORIZONTAL");
-		CoGroupContract areaSplit = CoGroupContract.builder(SplitByMedian.class, PactInteger.class, 0, 0).input1(medianSearch).input2(areaMapper).name("area split 0").build();
+		CoGroupContract areaSplit = CoGroupContract.builder(SplitAreasByMedian.class, PactInteger.class, 0, 0).input1(medianSearch).input2(areaMapper).name("area split 0").build();
 		areaSplit.setParameter("orientation",  "HORIZONTAL");
 		CoGroupContract previousNodeSplit = nodeSplit;
 		CoGroupContract previousAreaSplit = areaSplit;
@@ -61,9 +61,9 @@ public class TreeBuildingPlan implements PlanAssembler,
 			orientation = 1 == i % 2 ? "VERTICAL" : "HORIZONTAL"; 
 			medianSearch = CoGroupContract.builder(MedianSearch.class, PactInteger.class, 0, 0).input1(previousNodeSplit).input2(previousAreaSplit).name("median " + i).build();
 			medianSearch.setParameter("orientation",  orientation);
-			nodeSplit = CoGroupContract.builder(SplitByMedian.class, PactInteger.class, 0, 0).input1(medianSearch).input2(previousNodeSplit).name("node split " + i).build();
+			nodeSplit = CoGroupContract.builder(SplitNodesByMedian.class, PactInteger.class, 0, 0).input1(medianSearch).input2(previousNodeSplit).name("node split " + i).build();
 			nodeSplit.setParameter("orientation",  orientation);
-			areaSplit = CoGroupContract.builder(SplitByMedian.class, PactInteger.class, 0, 0).input1(medianSearch).input2(previousAreaSplit).name("area split " + i).build();
+			areaSplit = CoGroupContract.builder(SplitAreasByMedian.class, PactInteger.class, 0, 0).input1(medianSearch).input2(previousAreaSplit).name("area split " + i).build();
 			areaSplit.setParameter("orientation",  orientation);
 			previousNodeSplit = nodeSplit;
 			previousAreaSplit = areaSplit;	

@@ -44,12 +44,12 @@ public class BoundingBoxTask extends MapStub {
 			throws Exception {
 		outputRecord.setField(0, new PactInteger(1));
 		geometry.setValue(record.getField(0, PactGeometry.class));
-		outputRecord.setField(3, geometry);
 		Coordinate[] coordinates = geometry.getGeometry().getGeometry().getEnvelope().getCoordinates();
 		for (int i = 0; i < coordinates.length; ++i) {
-			outputRecord.setField(1, new PactDouble(coordinates[i].x));
-			outputRecord.setField(2, new PactDouble(coordinates[i].y));
-			collector.collect(outputRecord);
+			outputRecord.setField(2 * i, new PactDouble(coordinates[i].x));
+			outputRecord.setField(2 * i + 1, new PactDouble(coordinates[i].y));
 		}
+		outputRecord.setField(coordinates.length + 1, geometry);
+		collector.collect(outputRecord);
 	}
 }

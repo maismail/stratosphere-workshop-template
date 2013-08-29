@@ -23,7 +23,7 @@ public class MedianSearch extends CoGroupStub {
 	private String orientation = "HORIÍZONTAL";
 	private int cellId;
 	private boolean first;
-	private final static Log LOG = LogFactory.getLog(SplitByMedian.class);
+	private final static Log LOG = LogFactory.getLog(SplitNodesByMedian.class);
 	
 	@Override
 	public void open(Configuration parameters) throws Exception {
@@ -61,11 +61,7 @@ public class MedianSearch extends CoGroupStub {
 		}
 	}
 
-
-
-	
-	
-	private void getValues(Iterator<PactRecord> records) {
+	private void collectNodeValues(Iterator<PactRecord> records) {
 		while (records.hasNext()) {
 			PactRecord pactRecord = (PactRecord) records.next();
 			if (first) {
@@ -80,17 +76,41 @@ public class MedianSearch extends CoGroupStub {
 		}
 	}
 	
+	private void collectAreaValues(Iterator<PactRecord> records) {
+		while (records.hasNext()) {
+			PactRecord pactRecord = (PactRecord) records.next();
+			if (first) {
+				cellId = pactRecord.getField(0, PactInteger.class).getValue();
+				first = false;
+			}
+			int plus = orientation.equals("HORIZONTAL") ? 0 : 1;
+			for (int i = 0; i < 4; i++) {
+				values.add(pactRecord.getField(2 * i + plus, PactDouble.class).getValue());	
+			}
+		}
+	}
+	
 	@Override
 	public void coGroup(Iterator<PactRecord> records1,
 			Iterator<PactRecord> records2, Collector<PactRecord> out) {
+		values.clear();
 		first = true;
-		getValues(records1);
-		getValues(records2);
+		collectNodeValues(records1);
+		collectAreaValues(records2);
 		PactRecord outRecord = new PactRecord(2);
+		if (0 == values.size()) {
+			return;
+		}
+		if (cellId  < 0) {
+			outRecord.setField(0, new PactInteger(cellId));
+			outRecord.setField(1, new PactDouble(0));
+			out.collect(outRecord);
+			return;
+		}
 		outRecord.setField(0, new PactInteger(cellId));
-		outRecord.setField(1, new PactDouble(kmedian(values.size() / 2, values)));
+		outRecord.setField(1, new PactDouble(kmedian(values.size() / 2 + 1, values)));
 		out.collect(outRecord);
-		LOG.info("outrecord: " + cellId);
+		// LOG.info("outrecord: " + cellId);
 					// TODO Auto-generated method stub
 	}
 
