@@ -54,8 +54,8 @@ public class KomootStratosphere implements PlanAssembler, PlanAssemblerDescripti
 				reducer, "Result");
 		
 		RecordOutputFormat.configureRecordFormat(out).recordDelimiter('\n')
-		.fieldDelimiter(',').lenient(true).field(PactString.class, 0)
-		.field(PactStringList.class, 1);
+		.fieldDelimiter(',').lenient(true).field(PactString.class, 0).field(PactString.class, 1)
+		.field(PactStringList.class, 2);
 
 		Plan plan = new Plan(out, "BB");
 		plan.setDefaultParallelism(noSubTasks);
